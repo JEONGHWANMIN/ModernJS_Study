@@ -105,7 +105,7 @@ console.log(1 - 'abc'); // NaN
 
 ## 6.8 객체 타입
 
-[별도 문서로 정리.]([https://ryan-kim-dev.tistory.com/63](https://ryan-kim-dev.tistory.com/63))
+[별도 문서로 정리](https://ryan-kim-dev.tistory.com/63)
 
 ## 6.9 데이터 타입의 필요성
 
