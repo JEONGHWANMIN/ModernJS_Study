@@ -1,6 +1,7 @@
-
 # 06장 데이터 타입
-> 원시 타입
+>모던 자바스크립트 Deep Dive
+
+## 원시 타입
 - 숫자<sup>number</sup> 타입 : 숫자, 정수와 실수 구분 없이 하나의 숫자 타입만 존재
 - 문자열<sup>string</sup> 타입 : 문자열
 - 불리언<sup>boolean</sup> 타입 : 논리적 참(true)과 거짓(false)
