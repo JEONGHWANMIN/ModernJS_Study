@@ -348,6 +348,29 @@ func.log(); // 함수의 프로퍼티
 - 일반 함수는 반드시 호출할 수 있는 (함수)객체여야 하므로 함수 객체는 반드시 callable 이어야 한다.
 - 모든 함수 객체는 callable 이지만 모든 함수 객체가 constructor인 것은 아니다.
 
+```js
+function func() {}
+
+// 함수는 객체이므로 프로퍼티를 소유할 수 있다.
+func.str = '함수의 프로퍼티';
+
+// 함수는 객체이므로 메서드를 소유할 수 있다.
+func.log = function () {
+  console.log(this.str);
+};
+
+Object.getOwnPropertyDescriptors(func);
+// {length: {…}, name: {…}, arguments: {…}, caller: {…}, prototype: {…}, …}
+// arguments: {value: null, writable: false, enumerable: false, configurable: false}
+// caller: {value: null, writable: false, enumerable: false, configurable: false}
+// length: {value: 0, writable: false, enumerable: false, configurable: true}
+// log: {writable: true, enumerable: true, configurable: true, value: ƒ}
+// name: {value: 'func', writable: false, enumerable: false, configurable: true}
+// prototype: {value: {…}, writable: true, enumerable: false, configurable: false}
+// str: {value: '함수의 프로퍼티', writable: true, enumerable: true, configurable: true}
+// [[Prototype]]: Object
+```
+
 ### 17.2.5 constructor와 non-constructor의 구분
 
 자바스크립트 엔진은 함수 정의를 평가하여 함수 객체를 생성할 때 함수 정의 방식에 따라 함수를 constructor와 non-constructor로 구분한다.
