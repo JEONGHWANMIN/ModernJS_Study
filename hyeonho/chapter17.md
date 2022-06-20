@@ -14,13 +14,11 @@ const user = new Object(); // const user = {};
 // 프로퍼티 추가
 user.age = 10;
 user.name = 'Ryan';
-user.values = function() { console.log(`${this.age}살 ${this.name}이야.`) };
+user.values = function () {
+  console.log(`${this.age}살 ${this.name}이야.`);
+};
 
 user.values(); // 10살 Ryan이야.
-
-// 프로퍼티를 넣어서 생성할 수 없음!
-const user2 = new Object(age : 10, name : 'kim');
-user2; // SyntaxError: missing ) after argument list
 
 // Object 생성자 함수로 생성할수 있는 다양한 객체들
 
