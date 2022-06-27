@@ -1,5 +1,2 @@
-let obj = new Object();
-let obj1 = Object();
-
-console.log(obj);
-console.log(obj1);
+function PrintName(x, y) {}
+console.log(PrintName.name);
