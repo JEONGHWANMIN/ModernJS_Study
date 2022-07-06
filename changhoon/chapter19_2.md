@@ -478,6 +478,7 @@ taeJong.hasOwnProperty('who') // false
 
 King.jangja() // Uncaught TypeError: King.jangja is not a function
 King.hello() // 반갑다 나는 정적 메서드다!!
+
 King.who // '정적 프로퍼티 이름이다!'
 ```
 
