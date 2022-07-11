@@ -1,16 +1,17 @@
 const hwanMin = {
   name: 'HwanMin',
-  age: 31,
+  printName: function () {
+    setTimeout(function () {
+      console.log(this);
+    });
+  },
+
+  printName2: function () {
+    setTimeout(() => {
+      console.log(this);
+    });
+  },
 };
 
-Object.prototype.hwans = function () {
-  return `I'm Hwans`;
-};
-
-console.log(Object.keys(hwanMin));
-console.log(Object.values(hwanMin));
-console.log(Object.entries(hwanMin));
-
-for (let [key, value] of Object.entries(hwanMin)) {
-  console.log(key, value);
-}
+hwanMin.printName();
+hwanMin.printName2();
