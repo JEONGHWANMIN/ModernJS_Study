@@ -68,9 +68,7 @@ x = 1;
 * 만약 x 변수가 실행 컨텍스트가 관리하는 스코프에 등록되어 있다면 x 변수는 선언된 변수, 즉 **소스코드 평가 과정에서 선언문이 실행되어 등록된 변수**다. 
 * x 변수가 선언된 변수라면 값을 할당하고 할당 결과를 _실행 컨텍스트에 등록하여 관리_한다. 
 
-<img src="https://github.com/JEONGHWANMIN/ModernJS_Study/blob/master/changhoon/img/소스코드의실행.jpeg"  width="600" height="900"/>
-
-
+<img src="https://github.com/JEONGHWANMIN/ModernJS_Study/blob/master/changhoon/img/소스코드의실행.jpeg"  width="200" height="100"/>
 
 ## 23.3 실행 컨텍스트의 역할
 ```js
@@ -209,5 +207,5 @@ foo(); //6
     * 즉, 해당 실행 컨텍스트를 생성한 소스코드를 포함하는 상위 코드의 렉시컬 환경을 말한다.
     * 외부 렉시컬 환경에 대한 참조를 통해 단방향 링크드 리스트인 스코프 체인을 구현한다.
 
-
+## 23.6
 
