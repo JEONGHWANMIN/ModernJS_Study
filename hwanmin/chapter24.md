@@ -37,7 +37,7 @@ bar() 함수는 x = 1 이라는 값을 찍어준다.
 
 함수는 자신의 내부 슬롯 [[Environment]]에 자신이 정의 된 환경 , 즉 상위 스코프의 참조를 저장한다.
 
--> 그니까 함수가 생성 되면 [[Environment]] 라는 내부 슬롯이 생기는데 이떄 함수 평가 단계에서 스코프가 결정되는데 이거를 Environment 슬롯에 담아 뒀다가 나중에 함수 실행 단계에서
+-> 그니까 함수가 생성 되면 [[Environment]] 라는 내부 슬롯이 생기는데 이떄 코드 평가 단계에서 스코프가 결정되는데 이거를 Environment 슬롯에 담아 뒀다가 나중에 함수 실행 단계에서
 
 기억한 스코프를 꺼내서 쓰는 ? 이런 원리로 돌아가는 거 같다.
 
@@ -117,3 +117,140 @@ console.log(counter.decrease()); // 0
 클로저 -> 외부 상태 변경이나 가변 데이터를 피하고 불변셩을 지향하는 함수형 프로그래밍에서 부수 효과를 최대한 억제하여 오류를 피하고 프로그램의 안정성을 높이기 위해 클로저는 적극적으로 사용된다.
 
 클로저를 사용하면 클로저가 반환하는 함수만의 독자적인 렉시컬 환경을 가질 수 있다.
+
+# 캡슐화와 정보은닉
+
+캡슐화 -> 프로퍼티와 , 프로퍼티를 참조하고 조작할 수 있는 동작인 메서드를 하나로 묶는 것을 의미
+
+근데 이 때 메서드랑 프로퍼티를 숨길 목적으로 사용하는 것이면 이것은 정보은닉 이라고 합니다.
+
+객체지향 -> public private protected 같은 접근 제한자를 선언하여 공개 범위를 한정할 수 있다.
+
+private 외부 에서 클래스에 접근이 불가능 하도록 설정해준다.
+
+하지만 자바스크립트는 위 접근 제한자를 제공하지 않는다.
+
+그래서 기본 디폴트 값이 퍼블릭인 상태이다.
+
+```js
+const Person = (function () {
+  let _age = 0; // private
+
+  // 생성자 함수
+  function Person(name, age) {
+    this.name = name; // public
+    _age = age;
+  }
+
+  // 프로토타입 메서드
+  Person.prototype.sayHi = function () {
+    console.log(`Hi! My name is ${this.name}. I am ${_age}.`);
+  };
+
+  // 생성자 함수를 반환
+  return Person;
+})();
+
+const me = new Person('Lee', 20);
+me.sayHi(); // Hi! My name is Lee. I am 20.
+console.log(me.name); // Lee
+console.log(me._age); // undefined
+
+const you = new Person('Kim', 30);
+you.sayHi(); // Hi! My name is Kim. I am 30.
+console.log(you.name); // Kim
+console.log(you._age); // undefined
+```
+
+위 와 같이 즉시 실행함수로 생성자 함수를 만들고 , 프로토 타입 메서스도 넣어주고 return 으로 이 생성자 함수를 반환하면 그 위에 있는 변수들은 생명주기가 다 되었지만
+
+클로저를 사용해서 접근이 가능하다.
+
+```js
+const me = new Person('Lee', 20);
+me.sayHi(); // Hi! My name is Lee. I am 20.
+
+const you = new Person('Kim', 30);
+you.sayHi(); // Hi! My name is Kim. I am 30.
+
+// _age 변수 값이 변경된다!
+me.sayHi(); // Hi! My name is Lee. I am 30.
+```
+
+하지만 , 새로 인스턴스를 만들면 값이 초기화 되는 문제가 있다. 결국 근본적인 해결책이 되지 않는다.
+
+# 자주 발생하는 실수
+
+```js
+var funcs = [];
+
+for (var i = 0; i < 3; i++) {
+  funcs[i] = function () {
+    return i;
+  }; // ①
+}
+
+for (var j = 0; j < funcs.length; j++) {
+  console.log(funcs[j]()); // ②
+}
+
+// 3,3,3
+```
+
+각각 함수는 전역변수 Environment 인 i 변수를 을 기억하고 있다.
+
+위 포문이 끝났을 때 i 값은 3이다.
+
+```js
+var funcs = [];
+
+for (var i = 0; i < 3; i++) {
+  funcs[i] = (function (id) {
+    // ①
+    return function () {
+      return id;
+    };
+  })(i);
+}
+
+for (var j = 0; j < funcs.length; j++) {
+  console.log(funcs[j]());
+}
+```
+
+위 코드의 경우는 상위 스코프를 한번 더 지정해줘서 리턴되는 함수가 id 값을 클로저로 기억할 수 있도록 하는 예제이다.
+
+```js
+const funcs = [];
+
+for (let i = 0; i < 3; i++) {
+  funcs[i] = function () {
+    return i;
+  };
+}
+
+for (let i = 0; i < funcs.length; i++) {
+  console.log(funcs[i]()); // 0 1 2
+}
+```
+
+하지만 위 예제처럼 처음부터 블록레벨 스코프인 let을 사용한다면 편하게 사용이 가능합니다.
+
+for 문이 처음 실행되면 실행 컨텍스트 렉시컬 환경이 for문으로 교체되고
+
+각각 반복문을 돌 때 마다 , 새로운 렉시컬 환경으로 교체된다.
+
+let , const 를 사용하는 반복문은 코드블록을 반복 실핼할 때 마다 새로운 렉시컬 환경을 생성
+
+```js
+// 요소가 3개인 배열을 생성하고 배열의 인덱스를 반환하는 함수를 요소로 추가한다.
+// 배열의 요소로 추가된 함수들은 모두 클로저다.
+const funcs = Array.from(new Array(3), (\_, i) => () => i); // (3) [ƒ, ƒ, ƒ]
+
+// 배열의 요소로 추가된 함수 들을 순차적으로 호출한다.
+funcs.forEach(f => console.log(f())); // 0 1 2
+```
+
+위와 같은 방법도 있지만
+
+27장 ,26장에서 알아 보도록 하자 !!
