@@ -1,11 +1,6 @@
-const funcs = [];
-
-for (let i = 0; i < 3; i++) {
-  funcs[i] = function () {
-    return i;
-  };
-}
-
-for (let i = 0; i < funcs.length; i++) {
-  console.log(funcs[i]()); // 0 1 2
-}
+const target = "abc#123";
+target.replace(/[^A-Za-z0-9]/gi, "");
+console.log(
+  'target.replace(/[^A-Za-z0-9]/gi, ""): ',
+  target.replace(/[^A-Za-z0-9]/gi, "")
+);
