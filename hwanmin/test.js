@@ -1,13 +1,18 @@
-const Promise2 = new Promise((resolve, reject) => {
+const 프로미스 = new Promise((resolve, reject) => {
   setTimeout(() => {
-    reject("실패");
+    resolve(10);
   }, 3000);
-
-  setTimeout(() => {
-    resolve("성공");
-  }, 2500);
 });
 
-Promise2.then((res) => console.log(res))
+프로미스
+  .finally(() => console.log("시작~"))
   .catch((err) => console.log(err))
-  .finally(() => console.log("나는 파이널!"));
+  .then((res) => res + 1)
+  .then((res) => res + 1)
+  .then((res) => {
+    res + 1;
+    console.log(res + 1);
+    return res + 1;
+  })
+  .finally(() => console.log("끝~"))
+  .finally(() => console.log("진짜 끝이지롱"));
