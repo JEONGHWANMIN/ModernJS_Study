@@ -134,3 +134,150 @@ Promise2.then((res) => console.log(res))
   .catch((err) => console.log(err))
   .finally(() => console.log("나는 파이널!"));
 ```
+
+## 프로미스 체이닝
+
+```js
+const url = "https://jsonplaceholder.typicode.com";
+
+// id가 1인 post의 userId를 취득
+promiseGet(`${url}/posts/1`)
+  // 취득한 post의 userId로 user 정보를 취득
+  .then(({ userId }) => promiseGet(`${url}/users/${userId}`))
+  .then((userInfo) => console.log(userInfo))
+  .catch((err) => console.error(err));
+```
+
+위 예제는 then then catch 순서로 처리를 하였다.
+
+then then 이런식으로 연속해서 어떠한 프로미스를 처리하는 것을 프로미스 체이닝이라고 한다.
+
+그래서 위 then catch 들은 콜백함수가 반환한 프로미스를 반환한다.
+
+프로미스가 아니더라도 resolve , reject된 프로미스를 생성해서 반환한다.
+
+ES8때 도입된 async await 패턴을 통해서도 해결할 수 있다.
+
+```js
+const url = "https://jsonplaceholder.typicode.com";
+
+(async () => {
+  // id가 1인 post의 userId를 취득
+  const { userId } = await promiseGet(`${url}/posts/1`);
+
+  // 취득한 post의 userId로 user 정보를 취득
+  const userInfo = await promiseGet(`${url}/users/${userId}`);
+
+  console.log(userInfo);
+})();
+```
+
+위 예제는 async await을 사용해서 리팩토링 된 코드인데 확실히 좀 더 코드 읽는게 직관적 입니다.
+
+```js
+// ================================ Part4. Promise methods  ================================
+
+// Promise.all([])
+// 모든 프로미스가 fullfill 상태가 되면 종료된다.
+async function PromiseAll() {
+  const promise1 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("promise1");
+    }, 1000);
+  });
+  const promise2 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("promise2");
+    }, 3000);
+  });
+  const promise3 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("promise3");
+    }, 10000);
+  });
+
+  const result = await Promise.all([promise1, promise2, promise3]);
+  console.log(result);
+  result.map((promise) => {
+    console.log(promise);
+  });
+}
+
+// 하지만 하나라도 Reject 된다면 프로미스가 종료된다.
+async function PromiseAllReject() {
+  const promise1 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject("실패1");
+    }, 1000);
+  });
+  const promise2 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("promise2");
+    }, 3000);
+  });
+  const promise3 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("promise3");
+    }, 10000);
+  });
+
+  const result = await Promise.all([promise1, promise2, promise3]);
+  console.log(result);
+  result.map((promise) => {
+    console.log(promise);
+  });
+}
+
+// PromiseRace는 무조건 제일 빠른 프로미스를 반환한다.
+// 이때 제일 빠른 것이 반환해더라도 함수 실행은 계속 되어있다.
+// Promise.race도 Promise.all 과 똑같이 하나라도 reject되면 끝난다.
+async function PromiseRace() {
+  const promise2 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("promise2");
+    }, 3000);
+  });
+  const promise3 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("promise3");
+    }, 10000);
+  });
+  const promise1 = new Promise((resolve, reject) => {
+    // reject("실패!");
+    setTimeout(() => {
+      resolve("내가 제일 빨라 !!");
+    }, 1000);
+  });
+  const fastPromise = await Promise.race([promise2, promise3, promise1]);
+  console.log(fastPromise);
+}
+
+// Promise.allSettled는 각각의 성공 및 실패 상태를 배열안에 객체로 리턴해 준다.
+// 성공하면 값이 뭔지 , 실패하면 이유가 뭔지 알려준다.
+/** 
+ [
+  { status: 'fulfilled', value: 'promise2 성공!!' },
+  { status: 'rejected', reason: 'promise3 실패!!' },
+  { status: 'rejected', reason: 'promise 1 실패' }
+]
+ */
+async function PromiseAllSettled() {
+  const promise2 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("promise2 성공!!");
+    }, 3000);
+  });
+  const promise3 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject("promise3 실패!!");
+    }, 10000);
+  });
+  const promise1 = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject("promise 1 실패");
+    }, 1000);
+  });
+  const fastPromise = await Promise.allSettled([promise2, promise3, promise1]);
+  console.log(fastPromise);
+}
+```
