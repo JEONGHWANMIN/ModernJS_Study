@@ -1,15 +1,17 @@
-async function bar(n) {
-  const a = await new Promise((resolve) => setTimeout(() => resolve(n), 3000));
+const foo = () => {
+  throw Error("foo에서 발생한 에러");
+};
 
-  const b = await new Promise((resolve) =>
-    setTimeout(() => resolve(a + 1), 2000)
-  );
+const bar = () => {
+  foo();
+};
 
-  const c = await new Promise((resolve) =>
-    setTimeout(() => resolve(b + 1), 1000)
-  );
+const baz = () => {
+  bar();
+};
 
-  console.log([a, b, c]);
+try {
+  baz();
+} catch (e) {
+  console.log(e);
 }
-
-bar(1);
